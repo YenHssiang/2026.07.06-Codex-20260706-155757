@@ -1,0 +1,439 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>學習的問題很古老｜HTML 簡報</title>
+  <style>
+    :root {
+      --bg: #f7f4ef;
+      --ink: #16211d;
+      --muted: #52615b;
+      --line: #d8d0c4;
+      --accent: #1f7a6b;
+      --accent-2: #b84a39;
+      --accent-3: #315f9b;
+      --panel: #fffdfa;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: "Noto Sans TC", "Microsoft JhengHei", "PingFang TC", system-ui, sans-serif;
+      line-height: 1.55;
+    }
+
+    .deck {
+      min-height: 100vh;
+      display: grid;
+      grid-template-rows: 1fr auto;
+    }
+
+    .slide {
+      display: none;
+      min-height: calc(100vh - 72px);
+      padding: clamp(28px, 5vw, 72px);
+      align-items: center;
+    }
+
+    .slide.active {
+      display: grid;
+    }
+
+    .wrap {
+      width: min(1120px, 100%);
+      margin: 0 auto;
+    }
+
+    .kicker {
+      margin: 0 0 18px;
+      color: var(--accent);
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    h1,
+    h2 {
+      margin: 0;
+      letter-spacing: 0;
+      line-height: 1.15;
+    }
+
+    h1 {
+      max-width: 920px;
+      font-size: clamp(44px, 8vw, 92px);
+    }
+
+    h2 {
+      max-width: 920px;
+      font-size: clamp(34px, 5vw, 64px);
+    }
+
+    p {
+      margin: 18px 0 0;
+      max-width: 840px;
+      color: var(--muted);
+      font-size: clamp(20px, 2.2vw, 30px);
+    }
+
+    .lead {
+      color: var(--ink);
+      font-size: clamp(24px, 3vw, 38px);
+      font-weight: 700;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+      margin-top: 34px;
+    }
+
+    .tile {
+      min-height: 210px;
+      padding: 24px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+    }
+
+    .tile strong {
+      display: block;
+      color: var(--ink);
+      font-size: 26px;
+      line-height: 1.2;
+    }
+
+    .tile span {
+      display: block;
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: 18px;
+    }
+
+    .split {
+      display: grid;
+      grid-template-columns: 0.95fr 1.05fr;
+      gap: clamp(28px, 6vw, 72px);
+      align-items: center;
+    }
+
+    .number {
+      width: 86px;
+      height: 86px;
+      display: grid;
+      place-items: center;
+      margin-bottom: 24px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: white;
+      font-size: 34px;
+      font-weight: 800;
+    }
+
+    .quote {
+      padding-left: 26px;
+      border-left: 6px solid var(--accent-2);
+      color: var(--ink);
+      font-size: clamp(28px, 3.4vw, 44px);
+      font-weight: 800;
+      line-height: 1.32;
+    }
+
+    .list {
+      margin: 28px 0 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 14px;
+    }
+
+    .list li {
+      padding: 16px 20px;
+      border-left: 6px solid var(--accent);
+      background: rgba(255, 253, 250, 0.78);
+      font-size: clamp(20px, 2.1vw, 28px);
+      font-weight: 700;
+    }
+
+    .flow {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 34px;
+    }
+
+    .step {
+      position: relative;
+      min-height: 148px;
+      padding: 22px;
+      border-radius: 8px;
+      background: var(--ink);
+      color: white;
+    }
+
+    .step b {
+      display: block;
+      font-size: 28px;
+    }
+
+    .step small {
+      display: block;
+      margin-top: 10px;
+      color: rgba(255, 255, 255, 0.78);
+      font-size: 17px;
+    }
+
+    .controls {
+      height: 72px;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 18px;
+      align-items: center;
+      padding: 14px 22px;
+      border-top: 1px solid var(--line);
+      background: rgba(247, 244, 239, 0.94);
+      backdrop-filter: blur(8px);
+    }
+
+    button {
+      min-width: 46px;
+      height: 42px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      color: var(--ink);
+      font-size: 20px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      border-color: var(--accent);
+    }
+
+    .bar {
+      height: 8px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: #e7dfd4;
+    }
+
+    .bar span {
+      display: block;
+      height: 100%;
+      width: 0;
+      background: linear-gradient(90deg, var(--accent), var(--accent-3));
+    }
+
+    .count {
+      min-width: 72px;
+      color: var(--muted);
+      font-size: 16px;
+      text-align: right;
+    }
+
+    @media (max-width: 860px) {
+      .slide {
+        min-height: calc(100vh - 66px);
+        padding: 30px 20px;
+      }
+
+      .grid,
+      .flow,
+      .split {
+        grid-template-columns: 1fr;
+      }
+
+      .tile {
+        min-height: 0;
+      }
+
+      .controls {
+        height: 66px;
+        padding: 12px 14px;
+      }
+    }
+
+    @media print {
+      body {
+        background: white;
+      }
+
+      .deck {
+        display: block;
+      }
+
+      .slide,
+      .slide.active {
+        display: grid;
+        min-height: 100vh;
+        page-break-after: always;
+      }
+
+      .controls {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="deck">
+    <section class="slide active">
+      <div class="wrap">
+        <p class="kicker">從認知科學看教育</p>
+        <h1>教育把學習說得太複雜了</h1>
+        <p class="lead">學生學不好，往往不是問題變多，而是我們沒有對準大腦真正運作的方式。</p>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="wrap">
+        <p class="kicker">核心提問</p>
+        <h2>教育改革很多，但我們真的找對問題了嗎？</h2>
+        <p>素養導向、探究教學、自主學習、跨域整合、數位學習、AI 教育，各有立意；但所有設計最後都要回到同一件事：它是否改善學生的大腦學習歷程。</p>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="wrap">
+        <p class="kicker">四種學習困難</p>
+        <h2>學生學不好，通常卡在四個層次</h2>
+        <div class="grid">
+          <div class="tile"><strong>不想學</strong><span>動機系統沒有被啟動，注意力不會主動投入。</span></div>
+          <div class="tile"><strong>聽不懂</strong><span>工作記憶超載，資訊無法被有效處理。</span></div>
+          <div class="tile"><strong>記不住</strong><span>理解沒有轉化為長期記憶，考完就消失。</span></div>
+          <div class="tile"><strong>不會用</strong><span>知識停在孤立記憶，無法遷移到新情境。</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="wrap split">
+        <div>
+          <div class="number">1</div>
+          <p class="kicker">動機</p>
+          <h2>學生不想學</h2>
+          <p>大腦不是被動接收資訊的機器。沒有學習動機，就不會主動分配注意力。</p>
+        </div>
+        <div class="quote">教學設計第一個要回答的問題：如何讓學生願意投入認知資源？</div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="wrap split">
+        <div>
+          <div class="number">2</div>
+          <p class="kicker">理解</p>
+          <h2>學生想學，但聽不懂</h2>
+          <p>真正限制學習的，是容量有限的工作記憶。資訊太多、概念跳太快、先備知識不足，都會造成超載。</p>
+        </div>
+        <ul class="list">
+          <li>教得多，不等於學得多。</li>
+          <li>降低不必要的認知負荷。</li>
+          <li>建立概念之間的連結。</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="wrap split">
+        <div>
+          <div class="number">3</div>
+          <p class="kicker">記憶</p>
+          <h2>學生聽得懂，但記不住</h2>
+          <p>理解不代表學會。資訊如果沒有經過提取練習、間隔複習與反覆重建，就難以形成長期記憶。</p>
+        </div>
+        <div class="quote">真正的學習，是一次又一次重新提取、重新組織的過程。</div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="wrap split">
+        <div>
+          <div class="number">4</div>
+          <p class="kicker">遷移</p>
+          <h2>學生記得住，但不會用</h2>
+          <p>教育最常見的問題，不是不會背，而是不會用。知識若沒有形成概念網絡，就難以跨情境應用。</p>
+        </div>
+        <ul class="list">
+          <li>不只記住答案。</li>
+          <li>理解概念背後的原理。</li>
+          <li>形成可跨情境運作的心智表徵。</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="wrap">
+        <p class="kicker">回到大腦</p>
+        <h2>所有學習困難，都能回歸四個核心機制</h2>
+        <div class="flow">
+          <div class="step"><b>動機</b><small>願不願意開始學</small></div>
+          <div class="step"><b>理解</b><small>能不能處理資訊</small></div>
+          <div class="step"><b>記憶</b><small>能不能長期保存</small></div>
+          <div class="step"><b>遷移</b><small>能不能換情境使用</small></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="wrap">
+        <p class="kicker">教學與政策檢核</p>
+        <h2>新名詞不重要，是否改善學習歷程才重要</h2>
+        <ul class="list">
+          <li>是否提升學生的學習動機？</li>
+          <li>是否降低認知負荷、促進理解？</li>
+          <li>是否幫助知識進入長期記憶？</li>
+          <li>是否培養知識遷移能力？</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="wrap">
+        <p class="kicker">結語</p>
+        <h2>學生的大腦，從來沒有因為教育改革而改變</h2>
+        <p class="lead">真正需要改變的，不是學生的大腦，而是我們對學習本質的理解。</p>
+      </div>
+    </section>
+
+    <nav class="controls" aria-label="投影片控制">
+      <button type="button" id="prev" aria-label="上一張">‹</button>
+      <div class="bar" aria-hidden="true"><span id="progress"></span></div>
+      <div class="count" id="count"></div>
+      <button type="button" id="next" aria-label="下一張">›</button>
+    </nav>
+  </main>
+
+  <script>
+    const slides = Array.from(document.querySelectorAll(".slide"));
+    const progress = document.querySelector("#progress");
+    const count = document.querySelector("#count");
+    let current = 0;
+
+    function showSlide(index) {
+      current = Math.max(0, Math.min(index, slides.length - 1));
+      slides.forEach((slide, i) => slide.classList.toggle("active", i === current));
+      progress.style.width = `${((current + 1) / slides.length) * 100}%`;
+      count.textContent = `${current + 1} / ${slides.length}`;
+    }
+
+    document.querySelector("#prev").addEventListener("click", () => showSlide(current - 1));
+    document.querySelector("#next").addEventListener("click", () => showSlide(current + 1));
+
+    window.addEventListener("keydown", (event) => {
+      if (["ArrowRight", "PageDown", " "].includes(event.key)) showSlide(current + 1);
+      if (["ArrowLeft", "PageUp"].includes(event.key)) showSlide(current - 1);
+      if (event.key === "Home") showSlide(0);
+      if (event.key === "End") showSlide(slides.length - 1);
+    });
+
+    showSlide(0);
+  </script>
+</body>
+</html>
